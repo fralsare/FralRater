@@ -1,0 +1,72 @@
+{
+  "name": "fralrater",
+  "version": "0.1.0",
+  "description": "FralRater — readability app that tells you who your text is too hard for, and shows the fix. 100% local, by Fralsare.",
+  "main": "electron/main.js",
+  "author": "Fralsare <fralsare@users.noreply.github.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/fralsare/fralrater",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fralsare/fralrater.git"
+  },
+  "keywords": [
+    "readability",
+    "flesch-kincaid",
+    "writing",
+    "editor",
+    "offline",
+    "privacy",
+    "electron",
+    "desktop"
+  ],
+  "scripts": {
+    "start": "electron .",
+    "serve": "node server.js",
+    "package:linux": "electron-builder --linux",
+    "package:win": "electron-builder --win",
+    "package:portable": "node scripts/portable.js",
+    "package:all": "npm run package:linux && npm run package:win && npm run package:portable"
+  },
+  "build": {
+    "appId": "com.fralsare.fralrater",
+    "productName": "FralRater",
+    "artifactName": "${productName}-${version}-${os}-${arch}.${ext}",
+    "files": [
+      "server.js",
+      "electron/**/*",
+      "public/**/*",
+      "package.json"
+    ],
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb",
+        "rpm"
+      ],
+      "desktopName": "fralrater",
+      "syncDesktopName": true,
+      "category": "Utility",
+      "synopsis": "Readability that tells you who your text is too hard for",
+      "description": "FralRater scores text for specific readers, maps where readers get lost, and rewrites the hard parts. 100% local."
+    },
+    "deb": {
+      "maintainer": "Fralsare <fralsare@users.noreply.github.com>"
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true
+    }
+  },
+  "devDependencies": {
+    "archiver": "^7.0.1",
+    "electron": "^44.5.1",
+    "electron-builder": "^26.15.3"
+  }
+}

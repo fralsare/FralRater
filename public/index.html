@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self'; connect-src 'self'" />
+  <title>FralRater — readability that tells you who it's too hard for</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>📏</text></svg>" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo">📏</span>
+      <div>
+        <h1>FralRater</h1>
+        <p class="tagline">Hemingway tells you where it's hard. FralRater tells you who it's too hard for — and shows the fix.</p>
+      </div>
+    </div>
+    <nav class="tabs" id="tabs">
+      <button class="tab active" data-tab="analyze">Analyze</button>
+      <button class="tab" data-tab="audience">Audience</button>
+      <button class="tab" data-tab="rewrite">Rewrite</button>
+      <button class="tab" data-tab="compare">Compare</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- ============ ANALYZE ============ -->
+    <section id="tab-analyze" class="tabpane active">
+      <div class="input-card">
+        <div class="input-head">
+          <label for="text">Your text</label>
+          <div class="input-actions">
+            <button id="micBtn" class="btn ghost" title="Speech-to-text (Chrome/Chromium, needs mic)">🎙 Voice note</button>
+            <button id="sampleBtn" class="btn ghost">Load sample</button>
+            <button id="clearBtn" class="btn ghost">Clear</button>
+            <button id="analyzeBtn" class="btn primary">Analyze →</button>
+          </div>
+        </div>
+        <p id="micStatus" class="mic-status"></p>
+        <textarea id="text" rows="10" placeholder="Paste or dictate text here… (press the mic and talk)"></textarea>
+      </div>
+
+      <div id="analyze-results"></div>
+    </section>
+
+    <!-- ============ AUDIENCE ============ -->
+    <section id="tab-audience" class="tabpane">
+      <div class="input-card">
+        <div class="input-head">
+          <label for="audText">Text to rate for an audience</label>
+          <select id="audienceSelect" class="select"></select>
+        </div>
+        <textarea id="audText" rows="8" placeholder="Paste the text, pick your real audience, and see where they get lost."></textarea>
+        <button id="audAnalyzeBtn" class="btn primary">Rate for audience →</button>
+      </div>
+      <div id="audience-results"></div>
+    </section>
+
+    <!-- ============ REWRITE ============ -->
+    <section id="tab-rewrite" class="tabpane">
+      <div class="input-card">
+        <div class="input-head">
+          <label for="rwText">Text to fix</label>
+          <button id="copyRwBtn" class="btn ghost hidden">⧉ Copy rewritten</button>
+        </div>
+        <textarea id="rwText" rows="10" placeholder="Paste dense, jargon-y, passive text. FralRater splits, de-jargons, and un-buries the lead — rule-based, no AI, fully offline."></textarea>
+        <button id="rwBtn" class="btn primary">Rewrite &amp; show diff →</button>
+      </div>
+      <div id="rewrite-results"></div>
+    </section>
+
+    <!-- ============ COMPARE ============ -->
+    <section id="tab-compare" class="tabpane">
+      <div class="compare-grid">
+        <div class="input-card">
+          <label for="cmpA">Version A (e.g. original)</label>
+          <textarea id="cmpA" rows="8"></textarea>
+        </div>
+        <div class="input-card">
+          <label for="cmpB">Version B (e.g. edit / translation / LLM output)</label>
+          <textarea id="cmpB" rows="8"></textarea>
+        </div>
+      </div>
+      <button id="cmpBtn" class="btn primary">Compare →</button>
+      <div id="compare-results"></div>
+    </section>
+
+  </main>
+
+  <footer class="foot">
+    <p>FralRater by Fralsare — 100% local, your text never leaves this window.</p>
+    <p class="support">🙏 Support this open-source project → <a href="https://paypal.com/ncp/payment/KKFBWQP97XUCN" target="_blank" rel="noopener noreferrer">PayPal</a> · <a href="https://rzp.io/rzp/TdksERz" target="_blank" rel="noopener noreferrer">Razorpay</a></p>
+  </footer>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

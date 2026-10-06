@@ -1,0 +1,100 @@
+name: release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  # Linux: AppImage + .deb + .rpm (one job — all share the unpacked build)
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install build tools (rpmbuild for the .rpm target)
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq rpm
+      - run: npm ci
+      - run: npm run package:linux
+      - name: Collect Linux artifacts
+        run: |
+          mkdir -p release-linux
+          mv dist/*.AppImage release-linux/ 2>/dev/null || true
+          mv dist/*.deb release-linux/ 2>/dev/null || true
+          mv dist/*.rpm release-linux/ 2>/dev/null || true
+          ls -la release-linux
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fralrater-linux
+          path: release-linux
+          if-no-files-found: error
+
+  # Windows: NSIS installer .exe (wine NOT needed on a Windows runner)
+  win:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run package:win
+      - name: Collect Windows installer
+        shell: bash
+        run: |
+          mkdir -p release-win
+          mv dist/*.exe release-win/
+          ls -la release-win
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fralrater-win
+          path: release-win
+          if-no-files-found: error
+
+  # Windows: portable zip (unzip-and-run FralRater.exe)
+  portable:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run package:portable
+      - name: Collect portable zip
+        shell: bash
+        run: |
+          mkdir -p release-portable
+          mv dist/*portable*.zip release-portable/
+          ls -la release-portable
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fralrater-portable
+          path: release-portable
+          if-no-files-found: error
+
+  # Assemble the release from the three jobs' artifacts
+  release:
+    needs: [linux, win, portable]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          merge-multiple: true
+          path: artifacts
+      - name: Show artifacts
+        run: ls -la artifacts
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/*
+          generate_release_notes: true
