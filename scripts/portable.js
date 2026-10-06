@@ -25,12 +25,17 @@ const pkg = require(path.join(root, 'package.json'));
 const outZip = path.join(dist, `FralRater-portable-${pkg.version}-win-x64.zip`);
 
 // 1) Build the unpacked Windows app (cross-builds fine from Linux/Windows).
+// Run the local electron-builder CLI via the current Node binary — avoids
+// npx/.cmd spawn quirks on Windows (EINVAL on npx.cmd).
 console.log('[portable] Building unpacked win-x64 ...');
-execFileSync(process.platform === 'win32' ? 'npx.cmd' : 'npx', [
-  'electron-builder',
+const ebCli = require.resolve('electron-builder/cli.js');
+execFileSync(process.execPath, [
+  ebCli,
   '--win',
   '--x64',
   '--dir',
+  '--publish',
+  'never',
 ], { cwd: root, stdio: 'inherit' });
 
 if (!existsSync(unpacked)) {

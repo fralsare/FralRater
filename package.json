@@ -23,8 +23,8 @@
   "scripts": {
     "start": "electron .",
     "serve": "node server.js",
-    "package:linux": "electron-builder --linux",
-    "package:win": "electron-builder --win",
+    "package:linux": "electron-builder --linux --publish never",
+    "package:win": "electron-builder --win --publish never",
     "package:portable": "node scripts/portable.js",
     "package:all": "npm run package:linux && npm run package:win && npm run package:portable"
   },
@@ -44,10 +44,8 @@
         "deb",
         "rpm"
       ],
-      "desktopName": "fralrater",
       "syncDesktopName": true,
       "category": "Utility",
-      "synopsis": "Readability that tells you who your text is too hard for",
       "description": "FralRater scores text for specific readers, maps where readers get lost, and rewrites the hard parts. 100% local."
     },
     "deb": {
