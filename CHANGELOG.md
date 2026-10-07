@@ -19,6 +19,13 @@ and the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.
   `EINVAL` on Windows runners); it now runs the local electron-builder CLI.
 - Builds no longer trigger electron-builder's implicit tag publishing;
   releases are published only by the release workflow.
+- **Charts rendered as plain text** — two bugs: Chromium's DOMParser returns
+  SVG fragments with a null namespace when parsed as `image/svg+xml`, so the
+  browser drew no graphics. Chart markup is now parsed as HTML (whose
+  foreign-content handling assigns the proper SVG namespace). Additionally the
+  Content-Security-Policy blocked dynamic inline `style` attributes (bar
+  widths/colors), so `style-src` now allows inline styles while script-src
+  stays locked to `self`.
 
 ## [0.1.0] - 2026-10-06
 

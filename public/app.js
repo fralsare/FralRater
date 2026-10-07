@@ -32,9 +32,19 @@ function append(parent, ...nodes) {
 
 // Chart markup is generated from numeric values only (lib/charts.js embeds no user
 // text), so parsing it with DOMParser and moving nodes is safe.
+// NOTE: SVG is parsed as 'text/html', NOT 'image/svg+xml' — in Chromium, the latter
+// yields an <svg> root with a null namespace (no namespace prefix / no xmlns on a
+// bare <svg> fragment), so the browser would treat it as an unknown HTML element
+// and render no graphics. The HTML parser's foreign-content handling assigns the
+// proper SVG namespace, so the chart renders correctly.
 function mountGenerated(host, markup, isSvg) {
-  const doc = new DOMParser().parseFromString(markup, isSvg ? 'image/svg+xml' : 'text/html');
-  host.replaceChildren(...(isSvg ? doc.childNodes : doc.body.childNodes));
+  const doc = new DOMParser().parseFromString(markup, 'text/html');
+  if (isSvg) {
+    const svgEl = doc.body.querySelector('svg');
+    if (svgEl) host.replaceChildren(svgEl);
+  } else {
+    host.replaceChildren(...doc.body.childNodes);
+  }
 }
 
 function h2(text) {
