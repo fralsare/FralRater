@@ -1,6 +1,6 @@
 {
   "name": "fralrater",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "FralRater — readability app that tells you who your text is too hard for, and shows the fix. 100% local, by Fralsare.",
   "main": "electron/main.js",
   "author": "Fralsare <fralsare@users.noreply.github.com>",
@@ -39,6 +39,7 @@
       "package.json"
     ],
     "linux": {
+      "executableName": "FralRater",
       "target": [
         "AppImage",
         "deb",

@@ -1,12 +1,33 @@
 // FralRater — Electron main process.
 // Opens the app in a standalone window (no browser). Works on Windows and Linux.
+//
+// The UI is a static bundle (public/). In dev, server.js serves it for
+// browser use; here the main process serves the same files over a local
+// HTTP server on a free port — no external `node` binary needed, which is
+// what makes the packaged app (AppImage/deb/rpm/exe) work.
 'use strict';
 
 const { app, BrowserWindow, Menu, shell } = require('electron');
-const { spawn } = require('child_process');
+const fs = require('fs');
 const http = require('http');
 const net = require('net');
 const path = require('path');
+
+const ROOT = path.join(__dirname, '..', 'public');
+
+const MIME = {
+  '.html': 'text/html; charset=utf-8',
+  '.js': 'text/javascript; charset=utf-8',
+  '.css': 'text/css; charset=utf-8',
+  '.svg': 'image/svg+xml',
+  '.json': 'application/json; charset=utf-8',
+  '.png': 'image/png',
+  '.jpg': 'image/jpeg',
+  '.ico': 'image/x-icon',
+  '.woff': 'font/woff',
+  '.woff2': 'font/woff2',
+  '.txt': 'text/plain; charset=utf-8',
+};
 
 // Single instance: focus the existing window instead of opening a second app.
 if (!app.requestSingleInstanceLock()) {
@@ -22,6 +43,39 @@ function findFreePort() {
       srv.close(() => resolve(port));
     });
     srv.on('error', reject);
+  });
+}
+
+// Minimal static file server for the app bundle, bound to 127.0.0.1.
+function startServer(port) {
+  return new Promise((resolve, reject) => {
+    const server = http.createServer((req, res) => {
+      try {
+        const urlPath = decodeURIComponent((req.url || '/').split('?')[0]);
+        let rel = urlPath === '/' ? 'index.html' : urlPath.replace(/^\/+/, '');
+        const file = path.normalize(path.join(ROOT, rel));
+        if (!file.startsWith(ROOT + path.sep) && file !== ROOT) {
+          res.writeHead(403);
+          res.end('Forbidden');
+          return;
+        }
+        fs.stat(file, (err, stat) => {
+          if (err || !stat.isFile()) {
+            res.writeHead(404);
+            res.end('Not found');
+            return;
+          }
+          const type = MIME[path.extname(file).toLowerCase()] || 'application/octet-stream';
+          res.writeHead(200, { 'Content-Type': type, 'Content-Length': stat.size });
+          fs.createReadStream(file).pipe(res);
+        });
+      } catch (e) {
+        res.writeHead(500);
+        res.end('Server error');
+      }
+    });
+    server.on('error', reject);
+    server.listen(port, '127.0.0.1', () => resolve(server));
   });
 }
 
@@ -47,23 +101,16 @@ function waitForServer(port, tries = 100) {
   })();
 }
 
-function spawnServer(port) {
-  return spawn('node', [path.join(__dirname, '..', 'server.js')], {
-    env: { ...process.env, PORT: String(port) },
-    stdio: 'inherit',
-  });
-}
-
 let win = null;
-let serverProc = null;
+let httpServer = null;
 
 async function createWindow() {
   const port = await findFreePort();
-  serverProc = spawnServer(port);
+  httpServer = await startServer(port);
+  process.stderr.write(`FralRater local server: http://127.0.0.1:${port}\n`);
   const up = await waitForServer(port);
   if (!up) {
-    process.stderr.write(`FralRater: server did not start on port ${port}\n`);
-    serverProc.kill();
+    process.stderr.write(`FralRater: local server did not start on port ${port}\n`);
     app.quit();
     return;
   }
@@ -124,11 +171,10 @@ app.on('second-instance', () => {
 
 app.whenReady().then(createWindow);
 
-app.on('window-all-closed', () => {
-  if (serverProc) serverProc.kill();
+function shutdown() {
+  if (httpServer) httpServer.close();
   app.quit();
-});
+}
 
-app.on('before-quit', () => {
-  if (serverProc) serverProc.kill();
-});
+app.on('window-all-closed', shutdown);
+app.on('before-quit', shutdown);

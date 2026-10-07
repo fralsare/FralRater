@@ -6,6 +6,20 @@ and the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-10-06
+
+### Fixed
+
+- **Packaged apps didn't start** — the main process spawned an external
+  `node` binary to serve the UI, which does not exist in installed apps.
+  The UI is now served from the Electron main process itself, so all five
+  packaged formats (AppImage, .deb, .rpm, installer .exe, portable .exe)
+  launch correctly.
+- Windows portable build no longer shells out to `npx` (failed with
+  `EINVAL` on Windows runners); it now runs the local electron-builder CLI.
+- Builds no longer trigger electron-builder's implicit tag publishing;
+  releases are published only by the release workflow.
+
 ## [0.1.0] - 2026-10-06
 
 ### Added
@@ -35,5 +49,6 @@ and the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.
 - Packaging recipes: AppImage, .deb, .rpm (Linux) and NSIS installer .exe,
   portable .exe zip (Windows).
 
-[Unreleased]: https://github.com/fralsare/fralrater/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/fralsare/fralrater/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/fralsare/fralrater/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/fralsare/fralrater/releases/tag/v0.1.0
