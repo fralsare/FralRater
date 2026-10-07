@@ -97,4 +97,7 @@ jobs:
       - uses: softprops/action-gh-release@v2
         with:
           files: artifacts/*
+          # If a tag is re-pushed (or a release is re-built), replace the
+          # same-named assets instead of failing on duplicates.
+          overwrite_files: true
           generate_release_notes: true
