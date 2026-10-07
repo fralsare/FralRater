@@ -48,6 +48,8 @@ The app has four tabs across the top: **Analyze**, **Audience**, **Rewrite**,
 - **🎙 Voice note** — dictate into the Analyze box (see Section 6).
 - **Clear** — empties all text boxes.
 
+![FralRater main window](docs/screenshots/fralrater-analyze-tab-empty.png)
+
 ---
 
 ## 2. Analyze
@@ -68,6 +70,10 @@ Paste (or type) text into the box and press **Analyze**. You get:
 
 Use **Load sample** if you want a 5-second demo.
 
+![Analyze results — overall scores and Lost-Reader map](docs/screenshots/fralrater-analyze-scores-and-lost-reader-map.png)
+
+![Jargon findings, rhythm, concept density, actionability and accessibility](docs/screenshots/fralrater-analyze-jargon-rhythm-accessibility.png)
+
 ## 3. Audience
 
 Pick one of 8 reader personas and press **Score for audience**:
@@ -85,6 +91,8 @@ Pick one of 8 reader personas and press **Score for audience**:
 
 You get a 0–100 fit score, a verdict, and **per-paragraph confidence bars** so
 you can see exactly which paragraphs fail for that audience.
+
+![Audience fit for General adult with paragraph confidence](docs/screenshots/fralrater-audience-fit-general-adult.png)
 
 ## 4. Rewrite
 
@@ -111,12 +119,16 @@ Results you can read at a glance:
 Always review the diff before publishing: the rewriter is deliberately
 conservative.
 
+![Rewrite results — before/after cards, sentence diff, full rewritten text](docs/screenshots/fralrater-rewrite-diff-and-result.png)
+
 ## 5. Compare
 
 Paste version A and version B (draft vs edit, human vs LLM, original vs
 translation) and press **Compare**. You get a **radar chart** (smaller area =
 easier read) and a **head-to-head table** where the winning cell is green
 for each metric.
+
+![Compare — radar chart and head-to-head table](docs/screenshots/fralrater-compare-radar-head-to-head.png)
 
 ## 6. Voice Note (Speech-to-Text)
 

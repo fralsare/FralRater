@@ -15,6 +15,22 @@ accounts, no AI.
 ![license](https://img.shields.io/badge/license-MIT-green)
 ![privacy](https://img.shields.io/badge/privacy-100%25%20local-brightgreen)
 
+## Screenshots
+
+![FralRater main window](docs/screenshots/fralrater-analyze-tab-empty.png)
+
+| Analyze — scores & Lost-Reader map | Jargon, rhythm & accessibility |
+|---|---|
+| ![](docs/screenshots/fralrater-analyze-scores-and-lost-reader-map.png) | ![](docs/screenshots/fralrater-analyze-jargon-rhythm-accessibility.png) |
+
+| Audience fit | Rewrite diff |
+|---|---|
+| ![](docs/screenshots/fralrater-audience-fit-general-adult.png) | ![](docs/screenshots/fralrater-rewrite-diff-and-result.png) |
+
+| Compare radar + head-to-head |
+|---|
+| ![](docs/screenshots/fralrater-compare-radar-head-to-head.png) |
+
 ---
 
 ## Why it's different
